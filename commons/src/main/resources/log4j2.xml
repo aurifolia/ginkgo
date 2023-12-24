@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="WARN">
+    <Properties>
+        <Property name="layout" value="%d{yyyy-MM-dd HH:mm:ss.SSS} %-5level [%t] %logger{36}: %m%n" />
+        <Property name="logFileName" value="${sys:logFilePath:-/var/log}/${sys:logFileBaseName:-application}" />
+    </Properties>
+    <Appenders>
+        <Console name="Console" target="SYSTEM_OUT">
+            <PatternLayout pattern="${layout}"/>
+        </Console>
+        <RollingRandomAccessFile name="RollingFile" fileName="${logFileName}.log"
+                                 filePattern="${logFileName}_%d{yyyyMMdd}_%i.log.gz">
+            <PatternLayout>
+                <Pattern>${layout}</Pattern>
+            </PatternLayout>
+            <Policies>
+                <OnStartupTriggeringPolicy />
+                <SizeBasedTriggeringPolicy size="${sys:logFileMaxSize:-100MB}"/>
+                <TimeBasedTriggeringPolicy/>
+            </Policies>
+            <DefaultRolloverStrategy max="${sys:logFileMaxCount:-30}"/>
+        </RollingRandomAccessFile>
+    </Appenders>
+    <Loggers>
+        <AsyncRoot level="${sys:logLevel:-INFO}">
+            <Select>
+                <SystemPropertyArbiter propertyName="log2Console" propertyValue="false">
+                </SystemPropertyArbiter>
+                <DefaultArbiter>
+                    <AppenderRef ref="Console" />
+                </DefaultArbiter>
+            </Select>
+            <SystemPropertyArbiter propertyName="log2File" propertyValue="true">
+                <AppenderRef ref="RollingFile" />
+            </SystemPropertyArbiter>
+        </AsyncRoot>
+    </Loggers>
+</Configuration>

@@ -1,0 +1,11 @@
+spring:
+  kafka:
+    bootstrap-servers:
+      - 10.255.241.10:9092
+    producer:
+      acks: -1
+      properties:
+        partitioner:
+          class: org.apache.kafka.clients.producer.RoundRobinPartitioner
+    consumer:
+      group-id: test-group
