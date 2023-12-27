@@ -27,11 +27,6 @@ import java.util.List;
  **/
 @Configuration
 public class RedisTemplate4CacheConfiguration {
-    private boolean securityJackson2ModulesPresent = ClassUtils.isPresent("org.springframework.security" +
-            ".jackson2.SecurityJackson2Modules", this.getClass().getClassLoader());
-    private boolean oauth2Jackson2ModulePresent = ClassUtils.isPresent("org.springframework.security.oauth2.server" +
-            ".authorization.jackson2.OAuth2AuthorizationServerJackson2Module", this.getClass().getClassLoader());
-
     /**
      * key用String序列化, value用json序列化
      *
@@ -77,17 +72,7 @@ public class RedisTemplate4CacheConfiguration {
 
     private GenericJackson2JsonRedisSerializer getJsonSerializer() {
         GenericJackson2JsonRedisSerializer jsonSerializer = new GenericJackson2JsonRedisSerializer();
-        jsonSerializer.configure(objectMapper -> {
-            ObjectMapperHolder.configure(objectMapper);
-            if (securityJackson2ModulesPresent) {
-                List<Module> securityModules = SecurityJackson2Modules
-                        .getModules(RedisTemplate4CacheConfiguration.class.getClassLoader());
-                objectMapper.registerModules(securityModules);
-            }
-            if (oauth2Jackson2ModulePresent) {
-                objectMapper.registerModule(new OAuth2AuthorizationServerJackson2Module());
-            }
-        });
+        jsonSerializer.configure(ObjectMapperHolder::configure);
         return jsonSerializer;
     }
 }

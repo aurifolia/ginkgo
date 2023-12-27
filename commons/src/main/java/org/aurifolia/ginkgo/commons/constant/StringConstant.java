@@ -15,4 +15,8 @@ public class StringConstant {
      * none
      */
     public static final String NONE = "none";
+    /**
+     * comma
+     */
+    public static final String COMMA = ",";
 }

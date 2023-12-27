@@ -6,10 +6,11 @@ import com.nimbusds.jose.jwk.JWKSet;
 import com.nimbusds.jose.jwk.source.ImmutableJWKSet;
 import com.nimbusds.jose.jwk.source.JWKSource;
 import com.nimbusds.jose.proc.SecurityContext;
-import jakarta.servlet.http.HttpServletRequest;
 import org.aurifolia.ginkgo.commons.cache.RedisTemplate4CacheConfiguration;
-import org.aurifolia.ginkgo.commons.util.RandomUtil;
-import org.aurifolia.ginkgo.uaa.core.IdContainedOAuth2AuthorizationCodeGenerator;
+import org.aurifolia.ginkgo.uaa.service.CustomJdbcRegisteredClientRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.ApplicationArguments;
+import org.springframework.boot.ApplicationRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.security.SecurityProperties;
@@ -19,10 +20,8 @@ import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.MediaType;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.AuthenticationManagerResolver;
 import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.core.userdetails.User;
@@ -32,8 +31,6 @@ import org.springframework.security.oauth2.core.AuthorizationGrantType;
 import org.springframework.security.oauth2.core.ClientAuthenticationMethod;
 import org.springframework.security.oauth2.jose.jws.SignatureAlgorithm;
 import org.springframework.security.oauth2.jwt.JwtDecoder;
-import org.springframework.security.oauth2.server.authorization.authentication.OAuth2AuthorizationCodeRequestAuthenticationProvider;
-import org.springframework.security.oauth2.server.authorization.authentication.OAuth2AuthorizationConsentAuthenticationProvider;
 import org.springframework.security.oauth2.server.authorization.client.InMemoryRegisteredClientRepository;
 import org.springframework.security.oauth2.server.authorization.client.RegisteredClient;
 import org.springframework.security.oauth2.server.authorization.client.RegisteredClientRepository;
@@ -85,29 +82,6 @@ public class UaaApplication {
     }
 
     @Bean
-    public RegisteredClientRepository getRegisteredClientRepository() {
-        RegisteredClient registeredClient = RegisteredClient.withId("test-id")
-                .clientId("test-client-id")
-                .clientName("test-client-name")
-                .clientSecret("{noop}test-client-password")
-                .redirectUri("https://www.baidu.com")
-                .scope("read")
-                .scope("write")
-                .scope("cascade")
-                .authorizationGrantType(AuthorizationGrantType.AUTHORIZATION_CODE)
-                .authorizationGrantType(AuthorizationGrantType.REFRESH_TOKEN)
-                .authorizationGrantType(AuthorizationGrantType.CLIENT_CREDENTIALS)
-                .authorizationGrantType(AuthorizationGrantType.DEVICE_CODE)
-                .clientAuthenticationMethod(ClientAuthenticationMethod.CLIENT_SECRET_BASIC)
-                .clientAuthenticationMethod(ClientAuthenticationMethod.CLIENT_SECRET_POST)
-                .clientSettings(ClientSettings.builder().requireAuthorizationConsent(true).build())
-                .tokenSettings(TokenSettings.builder().accessTokenTimeToLive(Duration.ofHours(1)).refreshTokenTimeToLive(Duration.ofSeconds(20))
-                        .authorizationCodeTimeToLive(Duration.ofMinutes(30)).idTokenSignatureAlgorithm(SignatureAlgorithm.ES256)
-                        .reuseRefreshTokens(false).build()).build();
-        return new InMemoryRegisteredClientRepository(registeredClient);
-    }
-
-    @Bean
     public OAuth2TokenCustomizer<JwtEncodingContext> getOAuth2TokenCustomizer() {
         return context -> context.getJwsHeader().algorithm(SignatureAlgorithm.ES256);
     }
@@ -138,38 +112,9 @@ public class UaaApplication {
         return keyPair;
     }
 
-    private static KeyPair generateEd25519Key() {
-        KeyPair keyPair;
-        try {
-            KeyPairGenerator keyPairGenerator = KeyPairGenerator.getInstance("Ed25519");
-            keyPair = keyPairGenerator.generateKeyPair();
-        } catch (Exception ex) {
-            throw new IllegalStateException(ex);
-        }
-        return keyPair;
-    }
-
-//    @Bean
-    public OAuth2TokenGenerator getTokenGenerator() {
-        return new DelegatingOAuth2TokenGenerator(context -> null);
-    }
-
     @Bean
     @Order(Ordered.HIGHEST_PRECEDENCE)
     public SecurityFilterChain applyDefaultSecurity(HttpSecurity http) throws Exception {
-//        authorizationServerConfigurer.authorizationEndpoint(oAuth2AuthorizationEndpointConfigurer -> {
-//            oAuth2AuthorizationEndpointConfigurer.authenticationProviders(item -> {
-//                item.forEach(elem -> {
-//                    if (elem instanceof OAuth2AuthorizationConsentAuthenticationProvider provider) {
-//                        provider.setAuthorizationCodeGenerator(new IdContainedOAuth2AuthorizationCodeGenerator());
-//                    }
-//                    else if (elem instanceof OAuth2AuthorizationCodeRequestAuthenticationProvider provider) {
-//                        provider.setAuthorizationCodeGenerator(new IdContainedOAuth2AuthorizationCodeGenerator());
-//                    }
-//                });
-//                System.out.println();
-//            });
-//        });
         OAuth2AuthorizationServerConfiguration.applyDefaultSecurity(http);
         http.getConfigurer(OAuth2AuthorizationServerConfigurer.class).oidc(withDefaults());
         http.oauth2ResourceServer((resourceServer) -> resourceServer.jwt(withDefaults()));

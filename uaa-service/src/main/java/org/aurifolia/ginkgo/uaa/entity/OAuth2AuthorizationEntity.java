@@ -1,4 +1,4 @@
-package org.aurifolia.ginkgo.uaa.dto;
+package org.aurifolia.ginkgo.uaa.entity;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -29,7 +29,7 @@ import java.util.Set;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class OAuth2AuthorizationDTO {
+public class OAuth2AuthorizationEntity {
     private String id;
     private String registeredClientId;
     private String principalName;
@@ -132,8 +132,8 @@ public class OAuth2AuthorizationDTO {
      * @param oAuth2Authorization OAuth2Authorization
      * @return OAuth2AuthorizationDTO
      */
-    public static OAuth2AuthorizationDTO from(OAuth2Authorization oAuth2Authorization) {
-        OAuth2AuthorizationDTOBuilder builder = OAuth2AuthorizationDTO.builder()
+    public static OAuth2AuthorizationEntity from(OAuth2Authorization oAuth2Authorization) {
+        OAuth2AuthorizationEntityBuilder builder = OAuth2AuthorizationEntity.builder()
                 .id(oAuth2Authorization.getId())
                 .registeredClientId(oAuth2Authorization.getRegisteredClientId())
                 .principalName(oAuth2Authorization.getPrincipalName())
