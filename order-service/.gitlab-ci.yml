@@ -1,0 +1,61 @@
+default:
+  image: harbor.local/library/maven-k8s:3.9.6
+  tags:
+    - docker
+    - maven
+
+stages:
+  - sonarqube
+  - build
+  - deploy
+
+sonarqube-check:
+  stage: sonarqube
+  variables:
+    # Defines the location of the analysis task cache
+    SONAR_USER_HOME: "${CI_PROJECT_DIR}/.sonar"
+    # Tells git to fetch all the branches of the project, required by the analysis task
+    GIT_DEPTH: "0"
+  cache:
+    key: "${CI_JOB_NAME}"
+    paths:
+      - .sonar/cache
+  script:
+    - mvn verify sonar:sonar
+  only:
+    - merge_requests
+    - master
+    - main
+    - develop
+
+build:
+  stage: build
+  script:
+    - mvn -Dmaven.test.skip=true clean package
+    - sed -i "s|\${SERVICE_NAME}|$SERVICE_NAME|g" Dockerfile
+    - PACKAGE_NAME=$(basename $(ls target/*.jar))
+    - sed -i "s|\${PACKAGE_NAME}|$PACKAGE_NAME|g" Dockerfile
+    - IMAGE_NAME=harbor.local/gitlab-ci/demo:$(date -d "$CI_PIPELINE_CREATED_AT" +%Y%m%d%H%M%S)
+    - docker build -t $IMAGE_NAME .
+    - docker login harbor.local -u $registryUsername -p $registrySecret
+    - docker push $IMAGE_NAME
+    - echo "IMAGE_NAME=$IMAGE_NAME" >> build.env
+  artifacts:
+    reports:
+      dotenv: build.env
+
+deploy:
+  stage: deploy
+  script:
+    - sed -i "s|\${IMAGE_NAME}|$IMAGE_NAME|g" deployment.yaml
+    - sed -i "s|\${SERVICE_NAME}|$SERVICE_NAME|g" deployment.yaml
+    - sed -i "s|\${SERVICE_REPLICAS}|$SERVICE_REPLICAS|g" deployment.yaml
+    - sed -i "s|\${KUBERNETES_NAMESPACE}|$KUBERNETES_NAMESPACE|g" deployment.yaml
+    - sed -i "s|\${SERVICE_PORT}|$SERVICE_PORT|g" deployment.yaml
+    - sed -i "s|\${SERVICE_TLS_KEY}|$SERVICE_TLS_KEY|g" deployment.yaml
+    - sed -i "s|\${SERVICE_TLS_CRT}|$SERVICE_TLS_CRT|g" deployment.yaml
+    - sed -i "s|\${SERVICE_DOMAIN}|$SERVICE_DOMAIN|g" deployment.yaml
+    - sed -i "s|\${SERVICE_HOST}|$SERVICE_HOST|g" deployment.yaml
+    - sed -i "s|\${SERVICE_URI_PREFIX}|$SERVICE_URI_PREFIX|g" deployment.yaml
+    - kubectl apply -f deployment.yaml
+

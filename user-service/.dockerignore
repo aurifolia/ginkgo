@@ -1,0 +1,6 @@
+src
+target
+!target/*.jar
+.gitlab-ci.yml
+deployment.yaml
+pom.xml

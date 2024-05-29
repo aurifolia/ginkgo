@@ -1,0 +1,77 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ${SERVICE_NAME}
+  namespace: ${KUBERNETES_NAMESPACE}
+spec:
+  selector:
+    matchLabels:
+      app: ${SERVICE_NAME}
+  replicas: ${SERVICE_REPLICAS}
+  template:
+    metadata:
+      namespace: ${KUBERNETES_NAMESPACE}
+      labels:
+        app: ${SERVICE_NAME}
+    spec:
+      containers:
+        - name: ${SERVICE_NAME}
+          image: ${IMAGE_NAME}
+          ports:
+            - containerPort: ${SERVICE_PORT}
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: ${SERVICE_NAME}
+  namespace: ${KUBERNETES_NAMESPACE}
+spec:
+  selector:
+    app: ${SERVICE_NAME}
+  ports:
+    - port: ${SERVICE_PORT}
+
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: ${SERVICE_NAME}
+  namespace: ${KUBERNETES_NAMESPACE}
+data:
+  tls.key: ${SERVICE_TLS_KEY}
+  tls.crt: ${SERVICE_TLS_CRT}
+type: kubernetes.io/tls
+
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: ${SERVICE_NAME}
+  namespace: ${KUBERNETES_NAMESPACE}
+  annotations:
+    nginx.org/rewrites: "serviceName=${SERVICE_NAME} rewrite=/"
+spec:
+  ingressClassName: nginx
+  tls:
+    - hosts:
+        - ${SERVICE_DOMAIN}
+      secretName: ${SERVICE_NAME}
+  rules:
+    - host: ${SERVICE_HOST}
+      http:
+        paths:
+          - path: /${SERVICE_URI_PREFIX}/
+            pathType: Prefix
+            backend:
+              service:
+                name: ${SERVICE_NAME}
+                port:
+                  number: ${SERVICE_PORT}
+          - path: /${SERVICE_URI_PREFIX}
+            pathType: Exact
+            backend:
+              service:
+                name: ${SERVICE_NAME}
+                port:
+                  number: ${SERVICE_PORT}
