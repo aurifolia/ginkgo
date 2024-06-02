@@ -47,7 +47,7 @@ public class PageDTO<T> implements Serializable {
      * 从全量集合里构造出分页后的数据
      *
      * @param allItems 全量集合
-     * @param curPage 当前页数
+     * @param curPage  当前页数
      * @param pageSize 每页条数
      * @return 分页数据
      */

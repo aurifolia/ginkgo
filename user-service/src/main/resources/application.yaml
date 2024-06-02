@@ -3,3 +3,15 @@ server:
 spring:
   application:
     name: user-service
+  datasource:
+    url: jdbc:mysql://localhost:3306/gk_user?useSSL=true&serverTimezone=UTC
+    username: temp
+    password: 123
+  messages:
+    basename:
+
+mybatis-plus:
+  configuration:
+    map-underscore-to-camel-case: true
+  mapper-locations:
+    - classpath:org/aurifolia/ginkgo/user/mapper/xml/*.xml

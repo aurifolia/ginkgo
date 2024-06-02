@@ -232,6 +232,18 @@ public class ResultCode {
      */
     public static final String USER_UPLOAD_FILE_IS_TOO_LARGE = "C0055";
     /**
+     * 用户不存在
+     */
+    public static final String USER_NOT_EXISTS = "C0056";
+    /**
+     * 角色不存在
+     */
+    public static final String ROLE_NOT_EXISTS = "C0057";
+    /**
+     * 权限不存在
+     */
+    public static final String PERM_NOT_EXISTS = "C0058";
+    /**
      * 服务端出错
      */
     public static final String SERVICE_ERROR = "S0001";

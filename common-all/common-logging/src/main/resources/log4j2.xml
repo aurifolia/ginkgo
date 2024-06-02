@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Configuration status="WARN">
     <Properties>
-        <Property name="layout" value="%d{yyyy-MM-dd HH:mm:ss.SSS} %-5level [%t] %logger{36}: %m%n" />
-        <Property name="logFileName" value="${sys:LOG_FILE_PATH:-/var/log}/${sys:LOG_FILE_BASE_NAME:-application}" />
+        <Property name="layout" value="%d{yyyy-MM-dd HH:mm:ss.SSS} %-5level [%t] %logger{36}: %m%n"/>
+        <Property name="logFileName" value="${sys:LOG_FILE_PATH:-/var/log}/${sys:LOG_FILE_BASE_NAME:-application}"/>
     </Properties>
     <Appenders>
         <Console name="Console" target="SYSTEM_OUT">
@@ -14,7 +14,7 @@
                 <Pattern>${layout}</Pattern>
             </PatternLayout>
             <Policies>
-                <OnStartupTriggeringPolicy />
+                <OnStartupTriggeringPolicy/>
                 <SizeBasedTriggeringPolicy size="${sys:LOG_FILE_MAX_SIZE:-100MB}"/>
                 <TimeBasedTriggeringPolicy/>
             </Policies>
@@ -27,11 +27,11 @@
                 <SystemPropertyArbiter propertyName="log2Console" propertyValue="false">
                 </SystemPropertyArbiter>
                 <DefaultArbiter>
-                    <AppenderRef ref="Console" />
+                    <AppenderRef ref="Console"/>
                 </DefaultArbiter>
             </Select>
             <SystemPropertyArbiter propertyName="log2File" propertyValue="true">
-                <AppenderRef ref="RollingFile" />
+                <AppenderRef ref="RollingFile"/>
             </SystemPropertyArbiter>
         </AsyncRoot>
     </Loggers>
