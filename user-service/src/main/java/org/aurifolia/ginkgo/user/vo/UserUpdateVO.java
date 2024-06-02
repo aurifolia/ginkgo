@@ -21,7 +21,7 @@ public class UserUpdateVO implements Serializable {
     /**
      * 用户编号
      */
-    @NotNull(message = "{t001}")
+    @NotNull(message = "{v0004}")
     private Long id;
     /**
      * 用户名

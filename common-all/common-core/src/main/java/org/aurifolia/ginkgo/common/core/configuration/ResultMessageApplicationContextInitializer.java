@@ -21,11 +21,11 @@ import static org.springframework.core.io.support.ResourcePatternResolver.CLASSP
  * @author danpeng
  * @since 1.0
  */
-public class ResultMessageBeanFactoryPostProcessor implements PriorityOrdered,
+public class ResultMessageApplicationContextInitializer implements PriorityOrdered,
         ApplicationContextInitializer<ConfigurableApplicationContext> {
     private static final String BASENAME_KEY = "spring.messages.basename";
     private static final String DEFAULT_BASENAME = "messages";
-    private static final String RESULT_MESSAGE_BASENAME = "result-message";
+    private static final String RESULT_MESSAGE_BASENAME = "result-message, validation-message";
 
     @Override
     public void initialize(ConfigurableApplicationContext applicationContext) {

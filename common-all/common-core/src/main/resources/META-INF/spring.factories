@@ -1,2 +1,2 @@
 org.springframework.context.ApplicationContextInitializer=\
-org.aurifolia.ginkgo.common.core.configuration.ResultMessageBeanFactoryPostProcessor
+org.aurifolia.ginkgo.common.core.configuration.ResultMessageApplicationContextInitializer

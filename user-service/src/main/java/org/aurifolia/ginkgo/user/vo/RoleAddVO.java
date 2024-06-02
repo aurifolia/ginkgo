@@ -20,11 +20,11 @@ public class RoleAddVO implements Serializable {
     /**
      * 角色名
      */
-    @NotBlank(message = "角色名不能为空")
+    @NotBlank(message = "{v0005}")
     private String roleName;
     /**
      * 角色描述
      */
-    @NotBlank(message = "角色描述不能为空")
+    @NotBlank(message = "{v0006}")
     private String roleDesc;
 }

@@ -20,7 +20,7 @@ public class RoleUpdateVO implements Serializable {
     /**
      * 角色编号
      */
-    @NotNull(message = "角色编号不能为空")
+    @NotNull(message = "{v0007}")
     private Long id;
     /**
      * 角色名

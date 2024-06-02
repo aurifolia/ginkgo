@@ -20,11 +20,11 @@ public class PermAddVO implements Serializable {
     /**
      * 权限名
      */
-    @NotBlank(message = "权限名不能为空")
+    @NotBlank(message = "{v0008}")
     private String permName;
     /**
      * 权限描述
      */
-    @NotBlank(message = "权限描述不能为空")
+    @NotBlank(message = "{v0009}")
     private String permDesc;
 }

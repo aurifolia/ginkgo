@@ -21,17 +21,17 @@ public class UserAddVO implements Serializable {
     /**
      * 用户名
      */
-    @NotBlank(message = "用户名不能为空")
+    @NotBlank(message = "{v0001}")
     private String username;
     /**
      * 密码(单向加密后的密码)
      */
-    @NotBlank(message = "密码不能为空")
+    @NotBlank(message = "{v0002}")
     private String password;
     /**
      * 用户昵称
      */
-    @NotBlank(message = "用户昵称不能为空")
+    @NotBlank(message = "{v0003}")
     private String nickname;
     /**
      * 用户邮箱

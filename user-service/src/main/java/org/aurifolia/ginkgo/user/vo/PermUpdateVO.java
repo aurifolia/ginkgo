@@ -20,7 +20,7 @@ public class PermUpdateVO implements Serializable {
     /**
      * 权限编号
      */
-    @NotNull(message = "权限编号不能为空")
+    @NotNull(message = "{v0010}")
     private Long id;
     /**
      * 权限名

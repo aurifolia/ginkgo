@@ -206,7 +206,7 @@ public class ResultCode {
     /**
      * 请求次数超出限制
      */
-    public static final String REQUEST_COUNT_EXCEEDED_LIMIT = "C0059";
+    public static final String REQUEST_COUNT_EXCEEDED_LIMIT = "C0049";
     /**
      * 用户重复请求
      */
