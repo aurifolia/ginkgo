@@ -1,6 +1,7 @@
 package org.aurifolia.ginkgo.common.core.configuration;
 
 import org.aurifolia.ginkgo.common.core.dto.ResultDTO;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -17,6 +18,7 @@ import static org.aurifolia.ginkgo.common.core.constant.ResultCode.USER_REQUEST_
  * @since 1.0
  */
 @RestControllerAdvice
+@ConditionalOnClass(RestControllerAdvice.class)
 public class GlobalExceptionHandler {
     /**
      * 处理参数校验错误
