@@ -34,4 +34,8 @@ public class CommonConstant {
      * 默认时间格式
      */
     public static final DateTimeFormatter DEFAULT_TIME_FORMATTER = DateTimeFormatter.ofPattern(DEFAULT_TIME_PATTERN);
+    /**
+     * 请求头的ZoneId
+     */
+    public static final String HEADER_ZONE_ID = "zoneId";
 }
