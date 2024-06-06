@@ -1,5 +1,6 @@
 package org.aurifolia.ginkgo.user.controller;
 
+import org.aurifolia.ginkgo.common.core.annotation.ParameterExtends;
 import org.aurifolia.ginkgo.common.core.dto.ResultDTO;
 import org.aurifolia.ginkgo.common.core.exception.CommonException;
 import org.aurifolia.ginkgo.user.dto.PermInfoDTO;
@@ -21,6 +22,7 @@ import static org.aurifolia.ginkgo.common.core.constant.ResultCode.PERM_NOT_EXIS
  */
 @RestController
 @RequestMapping("/perm")
+@ParameterExtends(transformTimeZone = true)
 public class PermInfoController {
     private final IPermInfoService permInfoService;
 
@@ -65,6 +67,13 @@ public class PermInfoController {
         return permInfoService.removeById(id) ? ResultDTO.success() : ResultDTO.fail();
     }
 
+    /**
+     * 获取权限信息
+     *
+     * @param id 权限编号
+     * @return 权限信息
+     */
+    @GetMapping("/{id}")
     public ResultDTO<PermInfoDTO> getPerm(@PathVariable Long id) {
         PermInfo permInfo = permInfoService.getById(id);
         if (permInfo == null) {

@@ -1,5 +1,6 @@
 package org.aurifolia.ginkgo.user.controller;
 
+import org.aurifolia.ginkgo.common.core.annotation.ParameterExtends;
 import org.aurifolia.ginkgo.common.core.dto.ResultDTO;
 import org.aurifolia.ginkgo.common.core.exception.CommonException;
 import org.aurifolia.ginkgo.user.dto.UserInfoDTO;
@@ -21,6 +22,7 @@ import static org.aurifolia.ginkgo.common.core.constant.ResultCode.USER_NOT_EXIS
  */
 @RestController
 @RequestMapping("/user")
+@ParameterExtends(transformTimeZone = true)
 public class UserInfoController {
     private final IUserInfoService userInfoService;
 

@@ -1,5 +1,6 @@
 package org.aurifolia.ginkgo.user.controller;
 
+import org.aurifolia.ginkgo.common.core.annotation.ParameterExtends;
 import org.aurifolia.ginkgo.common.core.dto.ResultDTO;
 import org.aurifolia.ginkgo.common.core.exception.CommonException;
 import org.aurifolia.ginkgo.user.dto.RoleInfoDTO;
@@ -21,6 +22,7 @@ import static org.aurifolia.ginkgo.common.core.constant.ResultCode.ROLE_NOT_EXIS
  */
 @RestController
 @RequestMapping("/role")
+@ParameterExtends(transformTimeZone = true)
 public class RoleInfoController {
     private final IRoleInfoService roleInfoService;
 

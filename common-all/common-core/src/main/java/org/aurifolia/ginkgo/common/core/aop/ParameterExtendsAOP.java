@@ -51,22 +51,48 @@ public class ParameterExtendsAOP {
     }
 
     /**
-     * pointcut
+     * ParameterExtends
      */
     @Pointcut("@annotation(org.aurifolia.ginkgo.common.core.annotation.ParameterExtends)")
-    private void pointcut() {
+    private void parameterExtends() {
 
     }
 
     /**
-     * 前置处理
+     * within ParameterExtends
+     */
+    @Pointcut("@within(org.aurifolia.ginkgo.common.core.annotation.ParameterExtends)")
+    private void withinParameterExtends() {
+
+    }
+
+    /**
+     * RequestMappingSub
+     */
+    @Pointcut("@annotation(org.springframework.web.bind.annotation.GetMapping) " +
+            "|| @annotation(org.springframework.web.bind.annotation.PutMapping) " +
+            "|| @annotation(org.springframework.web.bind.annotation.PostMapping) " +
+            "|| @annotation(org.springframework.web.bind.annotation.DeleteMapping) " +
+            "|| @annotation(org.springframework.web.bind.annotation.PatchMapping) " +
+            "|| @annotation(org.springframework.web.bind.annotation.RequestMapping)")
+    private void requestMapping() {
+
+    }
+
+    @Pointcut("execution(org.aurifolia.ginkgo.common.core.dto.ResultDTO *(..))")
+    private void resultDTO() {
+
+    }
+
+    /**
+     * 转换入参时区
      *
      * @param joinPoint JoinPoint
      */
-    @Before("pointcut()")
-    public void before(JoinPoint joinPoint) {
-        ParameterExtends parameterExtends = getParameterExtends(joinPoint);
+    @Before("parameterExtends() || withinParameterExtends()")
+    public void transformTimezone4Params(JoinPoint joinPoint) {
         ZoneId zoneId;
+        ParameterExtends parameterExtends = getParameterExtends(joinPoint);
         if (!parameterExtends.transformTimeZone() || (zoneId = getTargetZoneId()) == null) {
             return;
         }
@@ -78,18 +104,40 @@ public class ParameterExtendsAOP {
     }
 
     /**
-     * 后置处理
+     * 转换返参时区
+     *
+     * @param joinPoint JoinPoint
+     * @param result Result
+     */
+    @AfterReturning(pointcut = "parameterExtends() || withinParameterExtends()", returning = "result")
+    public void transformTimezone4Result(JoinPoint joinPoint, Object result) {
+        if (result == null) {
+            return;
+        }
+        ZoneId zoneId;
+        ParameterExtends parameterExtends = getParameterExtends(joinPoint);
+        if (!parameterExtends.transformTimeZone() || (zoneId = getTargetZoneId()) == null) {
+            return;
+        }
+        handle(result, zoneId, false);
+    }
+
+    /**
+     * 填充resultMessage
      *
      * @param result 返参
      */
-    @AfterReturning(pointcut = "pointcut()", returning = "result")
-    public void after(JoinPoint joinPoint, Object result) {
-        ParameterExtends parameterExtends = getParameterExtends(joinPoint);
-        if (!parameterExtends.fillResultMessage()) {
+    @AfterReturning(pointcut = "resultDTO() && (parameterExtends() || withinParameterExtends() || requestMapping())", returning = "result")
+    public void fillResultMessage(JoinPoint joinPoint, Object result) {
+        if (result == null) {
             return;
         }
-        if (result instanceof ResultDTO<?> resultDTO
-                && StringUtils.hasText(resultDTO.getCode())
+        ParameterExtends parameterExtends = getParameterExtends(joinPoint);
+        if (parameterExtends != null && !parameterExtends.fillResultMessage()) {
+            return;
+        }
+        ResultDTO<?> resultDTO = (ResultDTO<?>) result;
+        if (StringUtils.hasText(resultDTO.getCode())
                 && !StringUtils.hasText(resultDTO.getMessage())) {
             try {
                 resultDTO.setMessage(messageSource.getMessage(resultDTO.getCode(),
@@ -99,12 +147,6 @@ public class ParameterExtendsAOP {
                 log.error("cannot fill result message for code {} with message source", resultDTO.getCode());
             }
         }
-        // 时区转换
-        ZoneId zoneId;
-        if (!parameterExtends.transformTimeZone() || (zoneId = getTargetZoneId()) == null) {
-            return;
-        }
-        handle(result, zoneId, false);
     }
 
     /**
@@ -133,7 +175,11 @@ public class ParameterExtendsAOP {
      * @return ParameterExtends
      */
     private ParameterExtends getParameterExtends(JoinPoint joinPoint) {
-        return ((MethodSignature) joinPoint.getSignature()).getMethod().getAnnotation(ParameterExtends.class);
+        ParameterExtends parameterExtends = ((MethodSignature) joinPoint.getSignature()).getMethod().getAnnotation(ParameterExtends.class);
+        if (parameterExtends == null) {
+            parameterExtends = joinPoint.getTarget().getClass().getAnnotation(ParameterExtends.class);
+        }
+        return parameterExtends;
     }
 
     /**
