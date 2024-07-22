@@ -31,6 +31,8 @@ developed on this basis to improve development efficiency.
 | SERVICE_HOST         | the host name of the service Ingress                                 |
 | SERVICE_URI_PREFIX   | path prefix of the Ingress service                                   |
 | KUBERNETES_NAMESPACE | name of the kubernetes namespace to which the service belongs        |
+| SONAR_HOST_URL       | sonar url                                                            |
+| SONAR_TOKEN          | sonar token                                                          |
 
 ## Runtime environment variable
 
