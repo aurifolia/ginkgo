@@ -1,0 +1,4 @@
+org.springframework.context.ApplicationContextInitializer=\
+org.aurifolia.common.api.configuration.ResultMessageApplicationContextInitializer
+org.aurifolia.common.api.configuration.ResultMessageRegistry=\
+org.aurifolia.common.api.configuration.CommonResultMessageRegistry

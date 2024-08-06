@@ -3,23 +3,36 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
-		<groupId>org.aurifolia</groupId>
-		<artifactId>ginkgo-parent</artifactId>
+		<groupId>org.aurifolia.ginkgo</groupId>
+		<artifactId>parent-starter</artifactId>
 		<version>0.0.1-SNAPSHOT</version>
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 
 	<artifactId>ginkgo-user</artifactId>
+	<packaging>pom</packaging>
+	<modules>
+		<module>user-interface-api</module>
+		<module>user-interface-api-openfeign</module>
+		<module>user-interface</module>
+		<module>user-application</module>
+		<module>user-domain</module>
+		<module>user-infrastructure</module>
+	</modules>
 
 	<properties>
 		<java.version>21</java.version>
+		<ginkgo-user-interface-api.version>0.0.1-SNAPSHOT</ginkgo-user-interface-api.version>
 	</properties>
 
-	<dependencies>
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-web</artifactId>
-		</dependency>
-	</dependencies>
+	<dependencyManagement>
+		<dependencies>
+			<dependency>
+				<groupId>org.aurifolia.ginkgo</groupId>
+				<artifactId>user-interface-api</artifactId>
+				<version>${ginkgo-user-interface-api.version}</version>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
 
 </project>

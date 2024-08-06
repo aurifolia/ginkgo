@@ -1,0 +1,2 @@
+org.aurifolia.common.api.configuration.ResultMessageRegistry=\
+org.aurifolia.ginkgo.user.api.configuration.UserResultMessageRegistry

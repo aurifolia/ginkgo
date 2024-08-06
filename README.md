@@ -16,6 +16,13 @@ developed on this basis to improve development efficiency.
 | product-service | 60201-60299 | product service                                                      |
 | order-service   | 60301-60399 | order service                                                        |
 
+## Result code partition
+
+| Service name | Result code range             |
+|--------------|-------------------------------|
+| common       | \[CST\]0000000-\[CST\]0009999 |
+| user-service | \[CST\]0010000-\[CST\]0019999 |
+
 ## Service deployment environment variable
 
 ## Pipeline environment variable
